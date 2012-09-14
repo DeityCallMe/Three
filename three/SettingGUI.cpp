@@ -149,8 +149,9 @@ void SettingGUI::initSetting()
 
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
 	char buff[128] = "";
+
 	char name[11]="MusicItem0";
-	for(int i=0;i<data->realdata.numberOfMusic;i++)
+	for(UINT i=0;i<data->realdata.numberOfMusic;i++)
 	{
 		name[10]=i+'0';
 		ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
@@ -159,7 +160,7 @@ void SettingGUI::initSetting()
 		list1->addItem(item);
 
 		item->setText((utf8*)buff);
-
+		//item->setFont();
 	}
 
 	ButtonBase* exBt = static_cast<ButtonBase*>(wmgr.getWindow("AddMusic"));
@@ -214,9 +215,24 @@ bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
 		lstrcat(szCurDir,p+ofn.nFileOffset);
 		if(CopyFile(p,szCurDir,false))
 		{
-			TCHAR* name=new TCHAR[lstrlen(p+ofn.nFileOffset)];
-			lstrcpy(name,p+ofn.nFileOffset);
-			data->realdata.music[data->realdata.numberOfMusic]=name;
+			TCHAR* music=new TCHAR[lstrlen(p+ofn.nFileOffset)];
+			lstrcpy(music,p+ofn.nFileOffset);
+
+			char name[11]="MusicItem0";
+			char buff[128] = "";
+			WindowManager& wmgr = WindowManager::getSingleton();
+			ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
+
+			name[10]=data->realdata.numberOfMusic+'0';
+			ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
+
+			ToUTF8(music,buff);
+
+			list1->addItem(item);
+
+			item->setText((utf8*)buff);
+
+			data->realdata.music[data->realdata.numberOfMusic]=music;
 			data->realdata.numberOfMusic++;
 		}
 		delete[] szPathName;
@@ -254,6 +270,13 @@ DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 	int curDirLen=lstrlen(szCurDir);
 
 	str+=srDirLen;
+
+	char name[11]="MusicItem0";
+	WindowManager& wmgr = WindowManager::getSingleton();
+	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
+
+	char buff[128] = "";
+
 	do
 	{
 		lstrcat(filePath,str);
@@ -262,10 +285,23 @@ DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 
 		if(CopyFile(filePath,szCurDir,false))
 		{
-			TCHAR* name=new TCHAR[lstrlen(str)];
-			lstrcpy(name,str);
-			data->realdata.music[data->realdata.numberOfMusic]=name;
+			TCHAR* music=new TCHAR[lstrlen(str)];
+			lstrcpy(music,str);
+
+			name[10]=data->realdata.numberOfMusic+'0';
+			ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
+
+			ToUTF8(music,buff);
+
+			list1->addItem(item);
+
+			item->setText((utf8*)buff);
+
+			data->realdata.music[data->realdata.numberOfMusic]=music;
 			data->realdata.numberOfMusic++;
+
+
+
 		}
 		szCurDir[curDirLen]=TEXT('\0');
 		filePath[srDirLen]=TEXT('\0');

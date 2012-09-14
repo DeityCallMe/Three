@@ -66,7 +66,7 @@ public:
 	}
 private:
 	IGeneralCall* gCall;
-	void SettingGUI::ToUTF8(TCHAR*,char*);
+	
 	void initEnter();
 	void initSetting();
 	bool setting(const CEGUI::EventArgs&);
@@ -76,6 +76,7 @@ private:
 
 
 	HANDLE m_thread;
+	static void ToUTF8(TCHAR*,char*);
 	static DWORD WINAPI CopyThread(LPVOID);
 };
 #endif

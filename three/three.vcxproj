@@ -46,6 +46,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <ExecutablePath>D:\Program Files\FMOD SoundSystem\FMOD Programmers API Windows\api;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>D:\Program Files\Microsoft DirectX SDK (June 2010)\Include;D:\Program Files\FMOD SoundSystem\FMOD Programmers API Windows\api\inc;D:\CEGUI-0.7.7\CEGUI-0.7.7\cegui\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\CEGUI-0.7.7\CEGUI-0.7.7\lib;D:\Program Files\Microsoft DirectX SDK (June 2010)\Lib\x86;D:\Program Files\FMOD SoundSystem\FMOD Programmers API Windows\api\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

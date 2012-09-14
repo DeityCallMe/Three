@@ -36,8 +36,11 @@ bool GUI::initialize(LPDIRECT3DDEVICE9 lp)
 	   DefaultResourceProvider* rp =
         static_cast<DefaultResourceProvider*>
             (System::getSingleton().getResourceProvider());
-    
-    const char* dataPathPrefix = "D:/CEGUI-0.7.7/CEGUI-0.7.7/datafiles";
+
+    char dataPathPrefix[MAX_PATH]; 
+	GetCurrentDirectoryA(sizeof(dataPathPrefix),dataPathPrefix); 
+	strcat(dataPathPrefix,"//datafiles");
+   // const char* dataPathPrefix = "//datafiles";
     char resourcePath[256];
 
     // for each resource type, set a resource group directory
