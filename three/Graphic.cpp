@@ -25,6 +25,54 @@ void Graphic::initPosition()
 
 
 }
+void Graphic::aaaaa()
+{
+	D3DXMATRIX mat_proj, mat_view,mat_world;
+	
+	D3DXMatrixOrthoLH(&mat_proj,DEFAULTWIDTH,DEFAULTHEIGHT,1.0f,1000.0f);
+	//D3DXMatrixPerspectiveFovLH(&mat_proj, D3DX_PI/4.0, 1.33333, 1.0, 1000.0);
+
+
+	D3DXMatrixLookAtLH(&mat_view, 
+		&D3DXVECTOR3(0.0, 0.0f, -100.0f),
+		&D3DXVECTOR3(0.0f, 0.0f, 0.0f), 
+		&D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+
+	mat_world=D3DXMATRIX
+		(
+		1,0,0,0,
+		0,1,0,0,
+		0,0,1,0,
+		DEFAULTWIDTH*-0.5f,DEFAULTHEIGHT*0.5f,0,1
+		);
+
+
+	g_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mat_proj);
+	g_pd3dDevice->SetTransform(D3DTS_VIEW, &mat_view);
+	g_pd3dDevice->SetTransform(D3DTS_WORLD, &mat_world);
+	
+
+	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+	g_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE,TRUE);
+	g_pd3dDevice->SetRenderState(D3DRS_SRCBLEND,  D3DBLEND_SRCALPHA);
+	g_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+
+
+	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+	g_pd3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	g_pd3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+
+	defaultState();
+
+	FAILED(g_pd3dDevice->SetFVF( CUSTOMVERTEX::D3DFVF_CUSTOMVERTEX ));
+
+
+	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+
+
+}
 void Graphic::render(int time)
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET| D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB( 0, 0, 0 ), 1.0f, 0 );
@@ -41,7 +89,7 @@ void Graphic::render(int time)
 		//vertices[5]=CUSTOMVERTEX( -100,-100,100,  0,1);
 		//DrawImage(vertices,100,6,tex,TRANSPARENT|RELEASEVTONEND|0x100);
 
-
+		
 
 		RenderList();
 
@@ -378,7 +426,7 @@ void Graphic::ReleaseList(DrawInfo* node)
 
 void Graphic::RenderData(UINT* offset,UINT count,UINT* lenList,LPDIRECT3DTEXTURE9* texList)
 {
-	for(int i=0;i<count;i++)
+	for(UINT i=0;i<count;i++)
 	{
 		if( FAILED(g_pd3dDevice->SetTexture( 0,texList[i])))
 			goto ends;

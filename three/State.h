@@ -29,6 +29,7 @@ public:
 	virtual ~MainState();
 protected:
 	UINT m_LastClickTime;
+	int elapseTime;
 
 	void GeneralConsole(BYTE*,UINT);
 	void GeneralRender(Context*,int,Graphic*);
@@ -48,7 +49,7 @@ public:
 	void frame(Context*,int, Graphic*);
 private:
 
-	int elapseTime;
+	//int elapseTime;
 };
 //
 class StateBetDown
@@ -60,7 +61,7 @@ public:
 	void console(BYTE*,UINT);
 	void frame(Context*,int, Graphic*);
 private:
-	int elapseTime;
+	//int elapseTime;
 
 };
 //
@@ -73,7 +74,7 @@ public:
 	void console(BYTE*,UINT);
 	void frame(Context*,int, Graphic*);
 private:
-	int elapseTime;
+	//int elapseTime;
 };
 class StateSetting
 	:public State

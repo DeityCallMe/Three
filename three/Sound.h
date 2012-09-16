@@ -17,6 +17,9 @@ public:
 	static Sound* InitializeSound();
 	static void ReleaseSound();
 
+	static UINT removeMusic(UINT);
+	static UINT removeMusic(TCHAR*);
+
 	void loadMusicList();
 	void playSound(int);
 private:

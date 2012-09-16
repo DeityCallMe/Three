@@ -67,15 +67,26 @@ public:
 private:
 	IGeneralCall* gCall;
 	
+
+
 	void initEnter();
 	void initSetting();
 	bool setting(const CEGUI::EventArgs&);
 	bool exit(const CEGUI::EventArgs&);
 	
+
+	bool RemoveMusic(const CEGUI::EventArgs&);
 	bool AddMusic(const CEGUI::EventArgs&);
 
+	void musicToList(TCHAR*);
 
+
+
+	UINT m_nameConut;
 	HANDLE m_thread;
+
+	char buff[128];
+
 	static void ToUTF8(TCHAR*,char*);
 	static DWORD WINAPI CopyThread(LPVOID);
 };

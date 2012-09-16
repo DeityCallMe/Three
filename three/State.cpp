@@ -12,7 +12,7 @@ State::~State()
 
 ImmediateData* MainState::data=ImmediateData::immediateData;
 MainState::MainState(Graphic* graphic)
-	:m_LastClickTime(0)
+	:m_LastClickTime(0),elapseTime(0)
 {
 	if(_background==NULL)
 		_background=new BackgroundAnimation(graphic);
@@ -181,7 +181,7 @@ void MainState::GeneralRender(Context* context ,int time,Graphic* graphic)
 	}
 }
 StateBegin::StateBegin(Graphic* graphic)
-	:MainState(graphic),elapseTime(0)
+	:MainState(graphic)
 {
 
 }
@@ -224,7 +224,7 @@ ret:
 	return;
 }
 StateBetDown::StateBetDown(Graphic* graphic )
-	:MainState(graphic),elapseTime(0)
+	:MainState(graphic)
 {
 
 }
@@ -240,6 +240,7 @@ void StateBetDown::frame(Context* context,int time,Graphic* graphic)
 	elapseTime+=time;
 	if(elapseTime>=1000)
 	{
+		data->realdata.prizeGold=rand()%(data->settingData.lagerGold-data->settingData.smallGold)+data->settingData.smallGold;
 		data->realdata.countdown++;
 		if(data->realdata.countdown>=data->settingData.detainTime)
 		{
@@ -256,7 +257,7 @@ void StateBetDown::console(BYTE* data,UINT bytes)
 
 }
 StateView::StateView(Graphic* graphic )
-	:MainState(graphic),elapseTime(0)
+	:MainState(graphic)
 {
 
 	ImmediateData* data=ImmediateData::immediateData;
@@ -347,7 +348,8 @@ void StateSetting::frame(Context* context,int time,Graphic* graphic)
 					// force quit on ESCAPE key
 					if (devDat.dwOfs == CEGUI::Key::Escape)
 					{
-						PostQuitMessage(0);
+						//PostQuitMessage(0);
+						exitSetting();
 					}
 					else
 					{

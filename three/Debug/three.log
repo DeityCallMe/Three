@@ -1,34 +1,53 @@
-﻿生成启动时间为 2012/9/14 20:49:40。
+﻿生成启动时间为 2012/9/15 22:16:08。
      1>项目“E:\One2011-11-09\t\three\three\three.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug\three.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         d:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt GUI.cpp SettingGUI.cpp
-         SettingGUI.cpp
-         Macro definition of max detected - undefining
-         Macro definition of min detected - undefining
+         d:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt BackgroundAnimation.cpp BaseGame.cpp Context.cpp GameManager.cpp Graphic.cpp Main.cpp NumberImage.cpp RenderDelegate.cpp State.cpp
+         State.cpp
          d:\program files\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-     1>e:\one2011-11-09\t\three\three\settinggui.cpp(153): warning C4018: “<”: 有符号/无符号不匹配
-         GUI.cpp
-     1>e:\one2011-11-09\t\three\three\gui.cpp(42): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : 参见“strcat”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(47): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(49): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(51): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(53): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(55): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(57): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(59): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
-     1>e:\one2011-11-09\t\three\three\gui.cpp(61): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 d:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : 参见“sprintf”的声明
+         Graphic.cpp
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(23): warning C4244: “=”: 从“LONG”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(24): warning C4244: “=”: 从“LONG”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(102): warning C4227: 使用了记时错误: 忽略引用上的限定符
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(287): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(288): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(340): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\graphic.cpp(429): warning C4018: “<”: 有符号/无符号不匹配
+         BackgroundAnimation.cpp
+         d:\program files\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(281): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(285): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(286): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(335): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(347): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(363): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(364): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(365): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(367): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(382): warning C4244: “-=”: 从“float”转换到“int”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(394): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(395): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(516): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(516): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(557): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593): warning C4533: “goto v3Temp”跳过了“ends”的初始化操作
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(531) : 参见“v3Temp”的声明
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593) : 参见“ends”的声明
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593): warning C4533: “goto mMov”跳过了“ends”的初始化操作
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(510) : 参见“mMov”的声明
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593) : 参见“ends”的声明
+     1>e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593): warning C4533: “goto mTra”跳过了“ends”的初始化操作
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(509) : 参见“mTra”的声明
+                 e:\one2011-11-09\t\three\three\backgroundanimation.cpp(593) : 参见“ends”的声明
          正在生成代码...
+         正在跳过...(未检测到相关更改)
+         RenderDelegate.cpp
+         NumberImage.cpp
+         Main.cpp
+         GameManager.cpp
+         Context.cpp
+         BaseGame.cpp
        ManifestResourceCompile:
          所有输出均为最新。
        Link:
@@ -61,4 +80,4 @@
 
 生成成功。
 
-已用时间 00:00:13.25
+已用时间 00:00:56.81

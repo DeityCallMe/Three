@@ -186,6 +186,46 @@ void Sound::playSound(int n)
 	system->playSound(FMOD_CHANNEL_FREE, sound[n], false, &channel);
 	//system->update();
 }
+UINT Sound::removeMusic(UINT music)
+{
+	UINT result;
+
+	ImmediateData* data=ImmediateData::immediateData;
+	if(music<data->realdata.numberOfMusic)
+	{
+		result=music;
+		data->realdata.numberOfMusic--;
+		for(;music<data->realdata.numberOfMusic;)
+		{
+			data->realdata.music[music]=data->realdata.music[++music];
+		}
+		data->realdata.music[music<=data->realdata.numberOfMusic]=0;
+	}
+	else
+		result=-1;
+
+	return result;
+}
+UINT Sound::removeMusic(TCHAR* music)
+{
+	UINT result=-1;
+
+	ImmediateData* data=ImmediateData::immediateData;
+	UINT count=0;
+	while(count < data->realdata.numberOfMusic)
+	{
+		if(lstrcmp(data->realdata.music[count],music))
+		{
+			result=removeMusic(count);
+			goto ends;
+		}
+	}
+
+ends:
+	return result;
+}
+
+
 void Sound::loadMusicList()
 {
 	ImmediateData* data=ImmediateData::immediateData;
@@ -194,7 +234,7 @@ void Sound::loadMusicList()
 
 	TCHAR szDir[MAX_PATH];
 
-	size_t length_of_arg;
+	//size_t length_of_arg;
 	HANDLE hFind = INVALID_HANDLE_VALUE;
 	DWORD dwError=0;
 

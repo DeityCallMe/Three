@@ -122,6 +122,8 @@ public:
 	//»ù±¾µÄ»­Í¼
 	bool DrawImage(ImageInfo*,float angle=0,DWORD flag=CENTRE);
 	bool DrawImage(CUSTOMVERTEX*,int,UINT,LPDIRECT3DTEXTURE9,DWORD flag=0);
+
+	void  aaaaa();
 private:
 	IDirect3D9* g_pD3D;
 

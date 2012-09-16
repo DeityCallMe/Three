@@ -86,6 +86,7 @@ struct SettingData
 		 print = 0;
 		 phone = 13416407888;
 		 memcpy(password,"123456789",10);
+		 ZeroMemory(lastPlay,30);
 		 //ZeroMemory(password,10);
 		// password[10]="";
 		 beginWay = 0;
@@ -123,6 +124,8 @@ struct SettingData
 
 	int backgroundMusic;
 	int musicMode;
+
+	TCHAR lastPlay[30];
 };
 class ImmediateData
 {

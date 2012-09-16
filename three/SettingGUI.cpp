@@ -4,7 +4,7 @@ using namespace CEGUI;
 
 
 SettingGUI::SettingGUI(LPDIRECT3DDEVICE9 d3ddevice)
-	:gCall(0)
+	:gCall(0),m_thread(0),m_nameConut(0)
 {
 
 
@@ -16,7 +16,8 @@ SettingGUI::~SettingGUI()
 	WindowManager& wmgr = WindowManager::getSingleton();
 	wmgr.destroyAllWindows();
 
-	CloseHandle(m_thread);
+	if(m_thread)
+		CloseHandle(m_thread);
 }
 void SettingGUI::initEnter()
 {
@@ -36,7 +37,7 @@ void SettingGUI::initEnter()
 	myRoot->addChildWindow( fWnd );
 
 
-	char buff[128] = "";
+
 	ToUTF8(_T("ÇëÊäÈëÃÜÂë"),buff);
 
 	fWnd->setPosition( UVector2( UDim( 0.25f, 0 ), UDim( 0.25f, 0 ) ) );
@@ -107,9 +108,25 @@ void SettingGUI::ToUTF8(TCHAR* bec,char* buff)
 	WideCharToMultiByte( CP_UTF8, 0, bec, -1, buff, 128, 0, 0);
 #else
 	///
+	warning
 #endif
 
 }
+void SettingGUI::musicToList(TCHAR* music)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	
+
+	//char name[11]="MusicItem0";
+	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
+	ToUTF8(music,buff);
+	ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",buff));
+	list1->addItem(item);
+
+	item->setText((utf8*)buff);
+		//item->setFont();
+}
+
 bool SettingGUI::setting(const CEGUI::EventArgs& args)
 {
 	ImmediateData* data=ImmediateData::immediateData;
@@ -148,24 +165,51 @@ void SettingGUI::initSetting()
 	Combobox* modeList=static_cast<Combobox*>(wmgr.getWindow("Mode"));
 
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
-	char buff[128] = "";
 
-	char name[11]="MusicItem0";
+
+	
+
+	//char name[11]="MusicItem0";
 	for(UINT i=0;i<data->realdata.numberOfMusic;i++)
 	{
-		name[10]=i+'0';
-		ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
-		ToUTF8(data->realdata.music[i],buff);
+		//name[10]=i+'0';
+	
+		//ToUTF8(data->realdata.music[i],buff);
+		//ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",buff));
+		//list1->addItem(item);
 
-		list1->addItem(item);
-
-		item->setText((utf8*)buff);
+		//item->setText((utf8*)buff);
+		musicToList(data->realdata.music[i]);
 		//item->setFont();
 	}
 
-	ButtonBase* exBt = static_cast<ButtonBase*>(wmgr.getWindow("AddMusic"));
+	ButtonBase* adBt = static_cast<ButtonBase*>(wmgr.getWindow("AddMusic"));
 
-	exBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::AddMusic,this));
+	adBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::AddMusic,this));
+
+	ButtonBase* reBt = static_cast<ButtonBase*>(wmgr.getWindow("RemoveMusic"));
+
+	reBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::RemoveMusic,this));
+}
+bool SettingGUI::RemoveMusic(const CEGUI::EventArgs& args)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
+
+	ItemEntry* item=list1->getLastSelectedItem();
+	list1->removeItem(item);
+
+#ifdef UNICODE
+
+    wchar_t	buff[128];
+	const char* a=item->getText().c_str();
+	MultiByteToWideChar( CP_UTF8, 0, a, -1, buff, 128);
+	Sound::removeMusic(buff);
+#else
+	Sound::removeMusic(item->getName().c_str());
+#endif
+	
+	return true;
 }
 bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
 {
@@ -217,20 +261,7 @@ bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
 		{
 			TCHAR* music=new TCHAR[lstrlen(p+ofn.nFileOffset)];
 			lstrcpy(music,p+ofn.nFileOffset);
-
-			char name[11]="MusicItem0";
-			char buff[128] = "";
-			WindowManager& wmgr = WindowManager::getSingleton();
-			ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
-
-			name[10]=data->realdata.numberOfMusic+'0';
-			ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
-
-			ToUTF8(music,buff);
-
-			list1->addItem(item);
-
-			item->setText((utf8*)buff);
+			musicToList(music);
 
 			data->realdata.music[data->realdata.numberOfMusic]=music;
 			data->realdata.numberOfMusic++;
@@ -271,7 +302,7 @@ DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 
 	str+=srDirLen;
 
-	char name[11]="MusicItem0";
+	//char name[11]="MusicItem0";
 	WindowManager& wmgr = WindowManager::getSingleton();
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
 
@@ -288,13 +319,11 @@ DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 			TCHAR* music=new TCHAR[lstrlen(str)];
 			lstrcpy(music,str);
 
-			name[10]=data->realdata.numberOfMusic+'0';
-			ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",name));
 
 			ToUTF8(music,buff);
+			ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",buff));
 
 			list1->addItem(item);
-
 			item->setText((utf8*)buff);
 
 			data->realdata.music[data->realdata.numberOfMusic]=music;
