@@ -1,39 +1,7 @@
-﻿生成启动时间为 2012/9/15 23:09:57。
-     1>项目“E:\One2011-11-09\t\three\three\three.vcxproj”在节点 2 上(build 个目标)。
-     1>InitializeBuildStatus:
-         正在创建“Release\three.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-       ClCompile:
-         d:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt State.cpp
-         State.cpp
-     1>e:\one2011-11-09\t\three\three\HAssert.h(7): warning C4005: “NDEBUG”: 宏重定义
-                 命令行参数: 参见前面的“NDEBUG”定义
-         D:\Program Files\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-       Link:
-         d:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\One2011-11-09\t\three\Release\three.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\three.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\One2011-11-09\t\three\Release\three.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\One2011-11-09\t\three\Release\three.lib" /MACHINE:X86 Release\BackgroundAnimation.obj
-         Release\BaseGame.obj
-         Release\Context.obj
-         Release\DInput.obj
-         Release\GameManager.obj
-         Release\GUI.obj
-         Release\SettingGUI.obj
-         Release\ImmediateData.obj
-         Release\Graphic.obj
-         Release\Main.obj
-         Release\NumberImage.obj
-         Release\RenderDelegate.obj
-         Release\SerialPort.obj
-         Release\Sound.obj
-         Release\State.obj
-         正在生成代码
-         已完成代码的生成
-         three.vcxproj -> E:\One2011-11-09\t\three\Release\three.exe
-       Manifest:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"E:\One2011-11-09\t\three\Release\three.exe;#1" /manifest Release\three.exe.intermediate.manifest
-       FinalizeBuildStatus:
-         正在删除文件“Release\three.unsuccessfulbuild”。
-         正在对“Release\three.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“E:\One2011-11-09\t\three\three\three.vcxproj”(build 个目标)的操作。
-
-生成成功。
-
-已用时间 00:00:12.25
+﻿  SettingGUI.cpp
+  Macro definition of max detected - undefining
+  Macro definition of min detected - undefining
+  D:\Program Files\Microsoft DirectX SDK (June 2010)\Include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+  正在生成代码
+  已完成代码的生成
+  three.vcxproj -> E:\One2011-11-09\t\three\Release\three.exe

@@ -20,7 +20,7 @@ ends:
 
 
 Sound::Sound()
-	:system(0),MusicChannel(0),MusicSound(0),channel(0)
+	:system(0),MusicChannel(0),MusicSound(0),channel(0),m_cuPlay(0),m_cuPos(0)
 {
 	
 }
@@ -60,6 +60,8 @@ DWORD Sound::PlayThread(LPVOID lpParamter)
 				sound->PlayMusic();
 			}
 		}
+
+
 		Sleep(30);
 	}
 	return 0;
@@ -183,7 +185,11 @@ void Sound::loadSound()
 void Sound::playSound(int n)
 {
 	assert(n >= 0 && n < COUNT);
+
 	system->playSound(FMOD_CHANNEL_FREE, sound[n], false, &channel);
+	m_willPlay[m_cuPos]=n;
+	if(++m_cuPos>=MAXPLAY)
+		m_cuPos=0;
 	//system->update();
 }
 UINT Sound::removeMusic(UINT music)

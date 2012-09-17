@@ -10,7 +10,7 @@
 
 #pragma comment (lib,"fmodex_vc.lib")
 #define COUNT 25
-
+#define MAXPLAY 10
 class Sound
 {
 public:
@@ -46,8 +46,9 @@ private:
     FMOD::Channel*   channel;
     FMOD_RESULT      m_FmodResult;
     //int               key;
-
-
+	UINT m_willPlay[MAXPLAY];
+	UINT m_cuPlay;
+	UINT m_cuPos;
 
 	static Sound* soleSound;
 

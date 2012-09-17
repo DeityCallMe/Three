@@ -165,7 +165,7 @@ void SettingGUI::initSetting()
 	Combobox* modeList=static_cast<Combobox*>(wmgr.getWindow("Mode"));
 
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
-
+	//list1->setProperty("MultiSelect","True");
 
 	
 
@@ -183,6 +183,8 @@ void SettingGUI::initSetting()
 		//item->setFont();
 	}
 
+
+
 	ButtonBase* adBt = static_cast<ButtonBase*>(wmgr.getWindow("AddMusic"));
 
 	adBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::AddMusic,this));
@@ -193,22 +195,34 @@ void SettingGUI::initSetting()
 }
 bool SettingGUI::RemoveMusic(const CEGUI::EventArgs& args)
 {
+	TCHAR szCurDir[MAX_PATH]; 
+	GetCurrentDirectory(sizeof(szCurDir),szCurDir); 
+	lstrcat(szCurDir,_T("\\Music\\"));
 	WindowManager& wmgr = WindowManager::getSingleton();
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
 
-	ItemEntry* item=list1->getLastSelectedItem();
-	list1->removeItem(item);
+	ItemEntry* item=list1->getNextSelectedItem();
 
+	UINT strLen=lstrlen(szCurDir);
+	wchar_t	buff[128];
+
+	while(item)
+	{
+		list1->removeItem(item);
 #ifdef UNICODE
+		//const char* a=item->getText().c_str();
+		MultiByteToWideChar( CP_UTF8, 0,item->getText().c_str(), -1, buff, 128);
 
-    wchar_t	buff[128];
-	const char* a=item->getText().c_str();
-	MultiByteToWideChar( CP_UTF8, 0, a, -1, buff, 128);
-	Sound::removeMusic(buff);
+		lstrcat(szCurDir,buff);
+		Sound::removeMusic(buff);
 #else
-	Sound::removeMusic(item->getName().c_str());
+		Sound::removeMusic(item->getName().c_str());
+		lstrcat(szCurDir,item->getName().c_str());
 #endif
-	
+		DeleteFile(szCurDir);
+		szCurDir[strLen]='\0';
+		item=list1->getNextSelectedItem();
+	}
 	return true;
 }
 bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
@@ -328,8 +342,6 @@ DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 
 			data->realdata.music[data->realdata.numberOfMusic]=music;
 			data->realdata.numberOfMusic++;
-
-
 
 		}
 		szCurDir[curDirLen]=TEXT('\0');
