@@ -8,7 +8,7 @@ GameManager::GameManager(HWND h)
 	srand((unsigned) time(NULL)); /*²¥ÖÖ×Ó*/ 
 
 	InitializeCriticalSection(&g_csThreadCode);
-	pGraphic=new Graphic(h);
+	pGraphic=Graphic::InitializeGraphic(h);
 	GUI::InitializeGUI(pGraphic->g_pd3dDevice);
 	ImmediateData::immediateData=new ImmediateData();
 
@@ -30,7 +30,7 @@ GameManager* GameManager::initManager(HWND h)
 GameManager::~GameManager()
 {
 	DeleteCriticalSection(&g_csThreadCode);  
-	delete pGraphic;
+	pGraphic->ReleaseGraphic();
 }
 void GameManager::Initialize()
 {

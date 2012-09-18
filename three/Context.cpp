@@ -3,9 +3,9 @@
 #include "Header.h"
 Context* Context::soleContext=0;
 Context::Context(State* s,Graphic* g)
-	:BaseGame(g),state(s)
+	:BaseGame(g),state(s),m_clearLast(MAXLIST),m_last(MAXLIST)
 {
-	m_last=MAXLIST;
+	//m_last=MAXLIST;
 }
 Context::~Context()
 {
@@ -29,7 +29,18 @@ State* Context::GetState()
 }
 void Context::Render(int time,Graphic* graphic)
 {
+	Rending=true;
 	state->frame(this,time,graphic);
+	ClearState();
+	Rending=false;
+}
+void Context::ClearState()
+{
+	while(m_clearLast<MAXLIST)
+	{
+		delete m_beClearList[m_clearLast];
+		m_clearLast++;
+	}
 }
 int Context::pushState(State* push)
 {
@@ -60,7 +71,13 @@ int Context::changeState(State* change,UINT flag)
 	}
 	else if(flag==REMOVE)
 	{
-		state->~State();
+		if(Rending)
+		{
+			m_clearLast--;
+			m_beClearList[m_clearLast]=state;
+		}
+		else
+			delete state;
 		ret=1;
 	}
 	if(ret)

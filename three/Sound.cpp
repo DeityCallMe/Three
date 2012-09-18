@@ -1,7 +1,6 @@
 #include "Sound.h"
 #include "Header.h"
 Sound* Sound::soleSound=0;
-bool Sound::m_isRun=false;
 UINT Sound::m_currentMusic=0;
 Sound* Sound::InitializeSound()
 {
@@ -26,23 +25,27 @@ Sound::Sound()
 }
 Sound::~Sound()
 {
+	DeleteCriticalSection(&m_csThreadCode);  
 	CloseHandle(m_thread);
 }
 
 DWORD Sound::PlayThread(LPVOID lpParamter)
 {
 	Sound* sound=(Sound*)lpParamter;
-
+	//FMOD::Sound* currentSound=0;
 	ImmediateData* data=ImmediateData::immediateData;
 
 	FMOD_RESULT musicResult;
-	while(m_isRun)
+
+	bool         playing = 0;
+	while(sound->m_isRun)
 	{
 		if(data->settingData.backgroundMusic&& sound->MusicChannel)
 		{
-			bool         playing = 0;
-			bool         paused = 0;
+			
+			//bool         paused = 0;
 			musicResult = sound->MusicChannel->isPlaying(&playing);
+			ERRCHECK(musicResult);
 			if(!playing)
 			{
 				if(data->settingData.musicMode==0)
@@ -60,8 +63,21 @@ DWORD Sound::PlayThread(LPVOID lpParamter)
 				sound->PlayMusic();
 			}
 		}
-
-
+		EnterCriticalSection(&sound->m_csThreadCode);
+		if(sound->m_cuPlay!=sound->m_cuPos)
+		{
+			musicResult = sound->channel->isPlaying(&playing);
+			ERRCHECK(musicResult);
+			if(!playing)
+			{
+				FMOD::Sound* play= sound->sound[sound->m_willPlay[sound->m_cuPlay]];
+				sound->system->playSound(FMOD_CHANNEL_FREE,play, false, &sound->channel);
+				sound->m_cuPlay++;
+				if(sound->m_cuPlay>=MAXPLAY)
+					sound->m_cuPlay=0;
+			}
+		}
+		LeaveCriticalSection(&sound->m_csThreadCode);
 		Sleep(30);
 	}
 	return 0;
@@ -122,7 +138,7 @@ bool Sound::initialize()
 	////
 	initMusic();
 
-
+	InitializeCriticalSection(&m_csThreadCode);
 	m_isRun=true;
 	CreateThread(0,0,PlayThread,this,0,0);
 
@@ -186,10 +202,12 @@ void Sound::playSound(int n)
 {
 	assert(n >= 0 && n < COUNT);
 
-	system->playSound(FMOD_CHANNEL_FREE, sound[n], false, &channel);
+	//system->playSound(FMOD_CHANNEL_FREE, sound[n], false, &channel);
+	EnterCriticalSection(&m_csThreadCode);
 	m_willPlay[m_cuPos]=n;
 	if(++m_cuPos>=MAXPLAY)
 		m_cuPos=0;
+	LeaveCriticalSection(&m_csThreadCode);
 	//system->update();
 }
 UINT Sound::removeMusic(UINT music)

@@ -52,7 +52,7 @@ void SettingGUI::initEnter()
 	pwBox->setPosition( UVector2( UDim( 0.1f, 0 ), UDim( 0.35f, 0 ) ) );
 
 	pwBox->setSize( UVector2( UDim( 0.8f, 0 ), UDim( 0.2f, 0 ) ) );
-	pwBox->setText("password");
+	//pwBox->setText("password");
 	pwBox->setTextMasked(true);
 	pwBox->setMaxTextLength(9);
 	pwBox->setCaratIndex(5);
@@ -124,6 +124,7 @@ void SettingGUI::musicToList(TCHAR* music)
 	list1->addItem(item);
 
 	item->setText((utf8*)buff);
+	//item->setHeight(UDim(2.0,0.0));
 		//item->setFont();
 }
 

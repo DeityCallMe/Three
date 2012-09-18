@@ -372,7 +372,7 @@ void BackgroundAnimation::initVertices(Graphic* pGraphic)
 }
 void BackgroundAnimation::Render(int time,Graphic* g)
 {
-	g->aaaaa();
+
 
 	ImmediateData* data=ImmediateData::immediateData;
 	elapseTime+=time;

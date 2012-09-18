@@ -32,10 +32,11 @@ private:
 
 	bool initialize();
 	void initMusic();
-	void ERRCHECK(FMOD_RESULT);
 
+	
 	void PlayMusic();
 
+	static void ERRCHECK(FMOD_RESULT);
 	static DWORD WINAPI PlayThread(LPVOID);
 	
 
@@ -52,9 +53,9 @@ private:
 
 	static Sound* soleSound;
 
-
+	CRITICAL_SECTION  m_csThreadCode;  
 	HANDLE m_thread;
-	static bool m_isRun;
+	bool m_isRun;
     unsigned int      version;
 	static UINT m_currentMusic;
 };

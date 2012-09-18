@@ -183,7 +183,10 @@ void MainState::GeneralRender(Context* context ,int time,Graphic* graphic)
 StateBegin::StateBegin(Graphic* graphic)
 	:MainState(graphic)
 {
-
+	ImmediateData* data=ImmediateData::immediateData;
+	data->realdata.view=0;
+	data->realdata.bureauTimes=0;
+	data->recordData.wheelTimes++;
 }
 StateBegin::~StateBegin()
 {
@@ -226,7 +229,8 @@ ret:
 StateBetDown::StateBetDown(Graphic* graphic )
 	:MainState(graphic)
 {
-
+	ImmediateData* data=ImmediateData::immediateData;
+	data->realdata.bureauTimes++;
 }
 
 StateBetDown::~StateBetDown()
@@ -261,12 +265,15 @@ StateView::StateView(Graphic* graphic )
 {
 
 	ImmediateData* data=ImmediateData::immediateData;
-	data->realdata.bureauTimes++;
+	//data->realdata.bureauTimes++;
 	int wheelTimes=data->recordData.wheelTimes;
 	int view=data->realdata.view;
+	UINT design=data->recordData.record[wheelTimes][view];
 
 	_background->DrawPoker=FRONT;
-	_background->SetPoker(data->recordData.record[wheelTimes][view],DESIGN);
+	_background->SetPoker(design,DESIGN);
+
+
 	if(data->recordData.record[wheelTimes][view]<4)
 	{
 		_background->SetPoker(rand()%13,POKER);
@@ -298,7 +305,15 @@ void StateView::frame(Context* context,int time,Graphic* graphic)
 		data->realdata.countdown++;
 		if(data->realdata.countdown>=data->settingData.detainTime)
 		{
-			context->changeState(new StateBetDown(graphic));
+			if(data->realdata.bureauTimes<100)
+			{
+				context->changeState(new StateBetDown(graphic));
+				
+			}
+			else
+			{
+				context->changeState(new StateBegin(graphic));
+			}
 			data->realdata.countdown=0;
 		}
 		elapseTime-=1000;
@@ -313,7 +328,7 @@ StateSetting::StateSetting(Graphic* graphic)
 StateSetting::~StateSetting()
 {
 	delete m_gui;
-
+	Graphic::InitializeGraphic()->defaultState();
 	DInput::InitializeDInput()->Nexclusive();
 	//DInput::InitializeDInput()->m_mouseDevice->Acquire();
 }

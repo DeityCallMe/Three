@@ -103,6 +103,12 @@ typedef map<LPDIRECT3DTEXTURE9,int> MapCount;
 class Graphic 
 {
 public:
+	static Graphic* InitializeGraphic(HWND hwnd=0);
+	static void ReleaseGraphic();
+
+
+
+
 	float currentWidth;
 	float currentHeight;
 
@@ -112,8 +118,7 @@ public:
 	//IDirect3DVertexBuffer9* g_pVB;
 	//IDirect3DIndexBuffer9  * g_IB;
 	///
-	Graphic(HWND);
-	~Graphic();
+
 	
 	bool loadImage(LPCTSTR,LPDIRECT3DTEXTURE9&);
 	bool releaseImage(LPDIRECT3DTEXTURE9&);
@@ -123,8 +128,13 @@ public:
 	bool DrawImage(ImageInfo*,float angle=0,DWORD flag=CENTRE);
 	bool DrawImage(CUSTOMVERTEX*,int,UINT,LPDIRECT3DTEXTURE9,DWORD flag=0);
 
-	void  aaaaa();
 private:
+	Graphic(HWND);
+	~Graphic();
+
+	static Graphic* soleGraphic;
+
+
 	IDirect3D9* g_pD3D;
 
 	//void SortList();

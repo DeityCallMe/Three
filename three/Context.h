@@ -6,7 +6,7 @@
 
 
 
-#define MAXLIST 100
+#define MAXLIST 10
 
 #define REMOVE 0
 #define SAVE 1
@@ -24,13 +24,16 @@ public:
 	int popState(State**);
 	State* GetState();
 
+	void ClearState();
 private:
 	Context(State*,Graphic*);
 	~Context();
-
+	bool Rending;
 	static Context* soleContext;
 	State*  state;
 	int m_last;
+	int m_clearLast;
 	State* m_stateList[MAXLIST];
+	State* m_beClearList[MAXLIST];
 };
 #endif
