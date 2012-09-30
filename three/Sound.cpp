@@ -40,6 +40,7 @@ DWORD Sound::PlayThread(LPVOID lpParamter)
 	bool         playing = 0;
 	while(sound->m_isRun)
 	{
+		EnterCriticalSection(&sound->m_csThreadCode);
 		if(data->settingData.backgroundMusic&& sound->MusicChannel)
 		{
 			
@@ -48,22 +49,22 @@ DWORD Sound::PlayThread(LPVOID lpParamter)
 			ERRCHECK(musicResult);
 			if(!playing)
 			{
-				if(data->settingData.musicMode==0)
+				if(data->settingData.musicMode==LISTREPEAT)
 				{
 					sound->m_currentMusic++;
 					if(sound->m_currentMusic>=data->realdata.numberOfMusic)
 						sound->m_currentMusic=0;
 					
 				}
-				else if(data->settingData.musicMode==1)
+				else if(data->settingData.musicMode==RANDOM)
 				{
 					sound->m_currentMusic=rand()%data->realdata.numberOfMusic;
 				}
+				//sound->MusicChannel->setVolume();
 				sound->MusicSound->release();
 				sound->PlayMusic();
 			}
 		}
-		EnterCriticalSection(&sound->m_csThreadCode);
 		if(sound->m_cuPlay!=sound->m_cuPos)
 		{
 			musicResult = sound->channel->isPlaying(&playing);
@@ -82,12 +83,36 @@ DWORD Sound::PlayThread(LPVOID lpParamter)
 	}
 	return 0;
 }
+void Sound::setMusicVolume()
+{
+	ImmediateData* data=ImmediateData::immediateData;
+	if(soleSound!=0)
+		soleSound->MusicChannel->setVolume(data->settingData.volume);
+}
+void Sound::setMusicVolume(float volume)
+{
+	if(soleSound!=0)
+		soleSound->MusicChannel->setVolume(volume);
+}
 void Sound::PlayMusic()
 {
 	ImmediateData* data=ImmediateData::immediateData;
-	if(m_currentMusic<data->realdata.numberOfMusic)
+	if(data->settingData.backgroundMusic&&m_currentMusic<data->realdata.numberOfMusic)
 	{
+		EnterCriticalSection(&m_csThreadCode);
 
+		if(MusicChannel)
+		{
+			bool         playing = 0;
+			//bool         paused = 0;
+			m_FmodResult = MusicChannel->isPlaying(&playing);
+			ERRCHECK(m_FmodResult);
+			if(playing)
+			{
+				MusicChannel->stop();
+				MusicSound->release();
+			}
+		}
 		//m_currentMusic=1;
 		TCHAR musicDir[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH,musicDir);   
@@ -112,9 +137,15 @@ void Sound::PlayMusic()
 		m_FmodResult = system->playSound(FMOD_CHANNEL_FREE, MusicSound, false, &MusicChannel);
 		ERRCHECK(m_FmodResult);
 
+		setMusicVolume();
+
+		memcpy(data->settingData.lastPlay,data->realdata.music[m_currentMusic],(lstrlen(data->realdata.music[m_currentMusic])+1)*sizeof(TCHAR));
+
+
 #ifdef UNICODE
 		delete[] music;
 #endif
+		LeaveCriticalSection(&m_csThreadCode);
 	}
 }
 bool Sound::initialize()
@@ -142,6 +173,8 @@ bool Sound::initialize()
 	m_isRun=true;
 	CreateThread(0,0,PlayThread,this,0,0);
 
+	setMusicVolume();
+
 	result=true;
 ends:
 	return result;
@@ -153,14 +186,9 @@ void Sound::initMusic()
 
 	if(data->settingData.backgroundMusic)
 	{
-		if(data->settingData.musicMode==0)
-		{
+		m_currentMusic=getMusicIndex(data->settingData.lastPlay);
+		if(m_currentMusic==-1)
 			m_currentMusic=0;
-		}
-		else
-		{
-			m_currentMusic=rand()%data->realdata.numberOfMusic;
-		}
 		PlayMusic();
 	}
 }
@@ -198,6 +226,25 @@ void Sound::loadSound()
 	}
 	delete[] path;
 }
+void Sound::playMusic(TCHAR* name)
+{
+
+	playMusic(getMusicIndex(name));
+
+}
+
+void Sound::playMusic(UINT index)
+{
+		ImmediateData* data=ImmediateData::immediateData;
+
+	if(index<data->realdata.numberOfMusic&&soleSound!=0)
+	{
+		soleSound->m_currentMusic=index;
+		soleSound->PlayMusic();
+	}
+}
+
+
 void Sound::playSound(int n)
 {
 	assert(n >= 0 && n < COUNT);
@@ -210,7 +257,7 @@ void Sound::playSound(int n)
 	LeaveCriticalSection(&m_csThreadCode);
 	//system->update();
 }
-UINT Sound::removeMusic(UINT music)
+int Sound::removeMusic(UINT music)
 {
 	UINT result;
 
@@ -230,25 +277,30 @@ UINT Sound::removeMusic(UINT music)
 
 	return result;
 }
-UINT Sound::removeMusic(TCHAR* music)
+int Sound::removeMusic(TCHAR* music)
+{
+	UINT result=removeMusic(getMusicIndex(music));
+ends:
+	return result;
+}
+int Sound::getMusicIndex(TCHAR* music)
 {
 	UINT result=-1;
 
 	ImmediateData* data=ImmediateData::immediateData;
 	UINT count=0;
-	while(count < data->realdata.numberOfMusic)
+	do
 	{
-		if(lstrcmp(data->realdata.music[count],music))
+		if(!lstrcmp(data->realdata.music[count],music))
 		{
-			result=removeMusic(count);
+			result=count;
 			goto ends;
 		}
 	}
-
+	while(++count < data->realdata.numberOfMusic);
 ends:
 	return result;
 }
-
 
 void Sound::loadMusicList()
 {

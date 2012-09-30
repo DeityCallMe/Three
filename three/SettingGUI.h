@@ -67,16 +67,22 @@ public:
 private:
 	IGeneralCall* gCall;
 	
-
+	ImmediateData* data;
 
 	void initEnter();
 	void initSetting();
-	bool setting(const CEGUI::EventArgs&);
+	bool enter(const CEGUI::EventArgs&);
 	bool exit(const CEGUI::EventArgs&);
-	
-
+	bool modeChanged(const CEGUI::EventArgs&);
+	bool EnterPassword(const CEGUI::EventArgs&);
+	bool EnsurePn(const CEGUI::EventArgs&);
+	bool EnsurePw(const CEGUI::EventArgs&);
+	bool numberChanged(const CEGUI::EventArgs&);
+	bool PasswordChanged(const CEGUI::EventArgs&);
 	bool RemoveMusic(const CEGUI::EventArgs&);
 	bool AddMusic(const CEGUI::EventArgs&);
+	bool Volume(const CEGUI::EventArgs&);
+	bool ItemDoubleClick(const CEGUI::EventArgs&);
 
 	void musicToList(TCHAR*);
 
@@ -85,7 +91,7 @@ private:
 	UINT m_nameConut;
 	HANDLE m_thread;
 
-	char buff[128];
+	char m_buff[128];
 
 	static void ToUTF8(TCHAR*,char*);
 	static DWORD WINAPI CopyThread(LPVOID);

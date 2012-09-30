@@ -17,8 +17,12 @@ public:
 	static Sound* InitializeSound();
 	static void ReleaseSound();
 
-	static UINT removeMusic(UINT);
-	static UINT removeMusic(TCHAR*);
+	static int removeMusic(UINT);
+	static int removeMusic(TCHAR*);
+	static void setMusicVolume();
+	static void setMusicVolume(float);
+	static void playMusic(TCHAR*);
+	static void playMusic(UINT);
 
 	void loadMusicList();
 	void playSound(int);
@@ -38,7 +42,7 @@ private:
 
 	static void ERRCHECK(FMOD_RESULT);
 	static DWORD WINAPI PlayThread(LPVOID);
-	
+	static int getMusicIndex(TCHAR*);
 
 	FMOD::System*    system;
     FMOD::Sound*     sound[COUNT];

@@ -186,6 +186,7 @@ StateBegin::StateBegin(Graphic* graphic)
 	ImmediateData* data=ImmediateData::immediateData;
 	data->realdata.view=0;
 	data->realdata.bureauTimes=0;
+	memcpy(data->realdata.currentRecord,data->recordData.record[data->recordData.wheelTimes],100);
 	data->recordData.wheelTimes++;
 }
 StateBegin::~StateBegin()
@@ -266,15 +267,10 @@ StateView::StateView(Graphic* graphic )
 
 	ImmediateData* data=ImmediateData::immediateData;
 	//data->realdata.bureauTimes++;
-	int wheelTimes=data->recordData.wheelTimes;
 	int view=data->realdata.view;
-	UINT design=data->recordData.record[wheelTimes][view];
-
-	_background->DrawPoker=FRONT;
-	_background->SetPoker(design,DESIGN);
-
-
-	if(data->recordData.record[wheelTimes][view]<4)
+	UINT design=data->realdata.currentRecord[view];
+	
+	if(design<4)
 	{
 		_background->SetPoker(rand()%13,POKER);
 	}
@@ -282,6 +278,10 @@ StateView::StateView(Graphic* graphic )
 	{
 		_background->SetPoker(rand()%2,POKER);
 	}
+
+	_background->DrawPoker=FRONT;
+	_background->SetPoker(design,DESIGN);
+
 
 }
 StateView::~StateView()

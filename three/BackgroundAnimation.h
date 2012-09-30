@@ -85,7 +85,7 @@ private:
 	Fish m_fish[NUMBEROFFISH];
 
 	D3DXVECTOR3  v3Array[100*6+4*6];
-	const BYTE* _record;
+	//const BYTE* _record;
 
 	NumberImage* number;
 };

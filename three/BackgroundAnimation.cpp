@@ -63,7 +63,7 @@ BackgroundAnimation::BackgroundAnimation(Graphic* graphic)
 
 	number=new NumberImage(graphic);
 
-	_record=ImmediateData::immediateData->recordData.record[ImmediateData::immediateData->recordData.wheelTimes];
+	//_record=ImmediateData::immediateData->recordData.record[ImmediateData::immediateData->recordData.wheelTimes];
 
 	info=new ImageInfo(0,150,1920,1080,100.0f,0.0f,0.0f,1.0f,1.0f);
 	m_info2=new ImageInfo(0,0,1920,1080,90.0f,0.0f,0.0f,1.0f,1.0f);
@@ -373,7 +373,7 @@ void BackgroundAnimation::initVertices(Graphic* pGraphic)
 void BackgroundAnimation::Render(int time,Graphic* g)
 {
 
-
+	
 	ImmediateData* data=ImmediateData::immediateData;
 	elapseTime+=time;
 	if(elapseTime>=1000/FRAME)
@@ -490,6 +490,8 @@ void BackgroundAnimation::Render(int time,Graphic* g)
 }
 bool BackgroundAnimation::record(CUSTOMVERTEX* vertices,int x,int y,float angle,Graphic* g)
 {
+
+	BYTE* _record=ImmediateData::immediateData->realdata.currentRecord;
 
 	bool result=false;
 	int view=ImmediateData::immediateData->realdata.view;

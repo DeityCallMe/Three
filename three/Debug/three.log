@@ -1,3 +1,5 @@
-﻿  State.cpp
+﻿  SettingGUI.cpp
+  Macro definition of max detected - undefining
+  Macro definition of min detected - undefining
   d:\program files\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
   three.vcxproj -> E:\One2011-11-09\t\three\Debug\three.exe

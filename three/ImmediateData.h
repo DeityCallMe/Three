@@ -6,8 +6,15 @@
 
 
 #define MAXMUSIC 300
+
+#define LISTREPEAT  0
+#define RANDOM      1
+#define TRACKREPEAT 2
+
 struct RealData
 {
+	BYTE currentRecord[100];
+
 	int bureauTimes;
 
 	int prizeGold;
@@ -84,15 +91,17 @@ struct SettingData
 		 lockFraction = 50000;
 		 difficulty = 0;
 		 print = 0;
-		 phone = 13416407888;
-		 memcpy(password,"123456789",10);
+		 volume=0.0f;
+
+		 memcpy(phone,_T("13416407888"),12*sizeof(TCHAR));
+		 memcpy(password,_T("123456789"),10*sizeof(TCHAR));
 		 ZeroMemory(lastPlay,30);
 		 //ZeroMemory(password,10);
 		// password[10]="";
 		 beginWay = 0;
 		 isK2 = 0;
 
-		 musicMode=0;
+		 musicMode=LISTREPEAT;
 	}
 	int spadeAmends;
 	int heartAmends;
@@ -117,15 +126,16 @@ struct SettingData
 	int lockFraction;
 	int difficulty;
 	int print;
-	__int64 phone;
-	char password[10];
+	TCHAR phone[12];
+	TCHAR password[10];
 	int beginWay;
 	int isK2;
 
 	int backgroundMusic;
 	int musicMode;
+	float volume;
 
-	TCHAR lastPlay[30];
+	TCHAR lastPlay[50];
 };
 class ImmediateData
 {

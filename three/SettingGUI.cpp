@@ -7,7 +7,7 @@ SettingGUI::SettingGUI(LPDIRECT3DDEVICE9 d3ddevice)
 	:gCall(0),m_thread(0),m_nameConut(0)
 {
 
-
+	data=ImmediateData::immediateData;
 	initEnter();
 }
 SettingGUI::~SettingGUI()
@@ -18,6 +18,8 @@ SettingGUI::~SettingGUI()
 
 	if(m_thread)
 		CloseHandle(m_thread);
+
+	data->SaveSetting();
 }
 void SettingGUI::initEnter()
 {
@@ -38,12 +40,12 @@ void SettingGUI::initEnter()
 
 
 
-	ToUTF8(_T("ÇëÊäÈëÃÜÂë"),buff);
+	ToUTF8(_T("ÇëÊäÈëÃÜÂë"),m_buff);
 
 	fWnd->setPosition( UVector2( UDim( 0.25f, 0 ), UDim( 0.25f, 0 ) ) );
 
 	fWnd->setSize( UVector2( UDim( 0.5f, 0 ), UDim( 0.5f, 0 ) ) );
-	fWnd->setText((utf8*)buff);
+	fWnd->setText((utf8*)m_buff);
 
 	
 	Editbox* pwBox = static_cast<Editbox*>(
@@ -55,7 +57,7 @@ void SettingGUI::initEnter()
 	//pwBox->setText("password");
 	pwBox->setTextMasked(true);
 	pwBox->setMaxTextLength(9);
-	pwBox->setCaratIndex(5);
+	//pwBox->setCaratIndex(5);
 	pwBox->setValidationString("[0-9]*");
 
 	ButtonBase* enBt = static_cast<ButtonBase*>(
@@ -64,12 +66,12 @@ void SettingGUI::initEnter()
 	enBt->setPosition( UVector2( UDim( 0.1f, 0 ), UDim( 0.7f, 0 ) ) );
 
 	enBt->setSize( UVector2( UDim( 0.3f, 0 ), UDim( 0.2f, 0 ) ) );
-	ToUTF8(_T("È·¶¨"),buff);
+	ToUTF8(_T("È·¶¨"),m_buff);
 
 
-	enBt->setText((utf8*)buff);
+	enBt->setText((utf8*)m_buff);
 
-	enBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::setting,this));
+	enBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::enter,this));
 
 
 	ButtonBase* exBt = static_cast<ButtonBase*>(
@@ -78,10 +80,10 @@ void SettingGUI::initEnter()
 	exBt->setPosition( UVector2( UDim( 0.6f, 0 ), UDim( 0.7f, 0 ) ) );
 
 	exBt->setSize( UVector2( UDim( 0.3f, 0 ), UDim( 0.2f, 0 ) ) );
-	ToUTF8(_T("ÍË³ö"),buff);
+	ToUTF8(_T("ÍË³ö"),m_buff);
 
 
-	exBt->setText((utf8*)buff);
+	exBt->setText((utf8*)m_buff);
 
 	exBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::exit,this));
 
@@ -91,8 +93,8 @@ void SettingGUI::initEnter()
 	erText->setPosition( UVector2( UDim( 0.32f, 0 ), UDim( 0.07f, 0 ) ) );
 
 	erText->setSize( UVector2( UDim( 0.36f, 0 ), UDim( 0.22f, 0 ) ) );
-	ToUTF8(_T("ÃÜÂë´íÎó"),buff);
-	erText->setText((utf8*)buff);
+	ToUTF8(_T("ÃÜÂë´íÎó"),m_buff);
+	erText->setText((utf8*)m_buff);
 	erText->setVisible(false);
 
 	//delete[] buff;
@@ -119,20 +121,27 @@ void SettingGUI::musicToList(TCHAR* music)
 
 	//char name[11]="MusicItem0";
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
-	ToUTF8(music,buff);
-	ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",buff));
+	ToUTF8(music,m_buff);
+	ItemEntry* item=static_cast<ItemEntry*>(wmgr.createWindow( "OgreTray/ListboxItem",m_buff));
 	list1->addItem(item);
-
-	item->setText((utf8*)buff);
+	item->subscribeEvent(Editbox::EventMouseDoubleClick,Event::Subscriber(&SettingGUI::ItemDoubleClick,this));
+	item->setText((utf8*)m_buff);
 	//item->setHeight(UDim(2.0,0.0));
 		//item->setFont();
 }
 
-bool SettingGUI::setting(const CEGUI::EventArgs& args)
+bool SettingGUI::enter(const CEGUI::EventArgs& args)
 {
-	ImmediateData* data=ImmediateData::immediateData;
+	
 	WindowManager& wmgr = WindowManager::getSingleton();
-	if(!strcmp(data->settingData.password,wmgr.getWindow("passwordBox")->getText().c_str()))
+
+	TCHAR	buff[128];
+#ifdef UNICODE
+	MultiByteToWideChar( CP_UTF8, 0,wmgr.getWindow("passwordBox")->getText().c_str(), -1, buff, 128);
+#else
+	memcpy(buff,wmgr.getWindow("passwordBox")->getText().c_str(),strlen(wmgr.getWindow("passwordBox")->getText().c_str())+1);
+#endif
+	if(!lstrcmp(data->settingData.password,buff))
 	{
 		wmgr.destroyAllWindows();
 		System::getSingleton().setGUISheet(wmgr.loadWindowLayout("MyLayout.layout"));
@@ -156,21 +165,55 @@ bool SettingGUI::setting(const CEGUI::EventArgs& args)
 	{
 		wmgr.getWindow("passwordError")->setVisible(true);
 	}
+
+
 	return true;
 }
+
+
 void SettingGUI::initSetting()
 {
-	ImmediateData* data=ImmediateData::immediateData;
+	
 
 	WindowManager& wmgr = WindowManager::getSingleton();
 	Combobox* modeList=static_cast<Combobox*>(wmgr.getWindow("Mode"));
 
-	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
-	//list1->setProperty("MultiSelect","True");
+	ListboxItem* item[3];
+	ToUTF8(_T("Ë³Ðò²¥·Å"),m_buff);
+	item[LISTREPEAT]= new CEGUI::ListboxTextItem((utf8*)m_buff,LISTREPEAT); 
+	modeList->addItem(item[LISTREPEAT]);
+
+	ToUTF8(_T("Ëæ»ú²¥·Å"),m_buff);
+	item[RANDOM]= new CEGUI::ListboxTextItem( (utf8*)m_buff,RANDOM); 
+	modeList->addItem(item[RANDOM]);
+
+	ToUTF8(_T("µ¥ÇúÑ­»·"),m_buff);
+	item[TRACKREPEAT]= new CEGUI::ListboxTextItem( (utf8*)m_buff,TRACKREPEAT); 
+	modeList->addItem(item[TRACKREPEAT]);
+
+	modeList->setHeight(UDim(0.25,0));
+
+	modeList->setItemSelectState(item[data->settingData.musicMode],true);
+
+	modeList->subscribeEvent(Combobox::EventListSelectionChanged,Event::Subscriber(&SettingGUI::modeChanged,this));
+
 
 	
+	//list1->setProperty("MultiSelect","True");
 
+	Editbox* pnBox=static_cast<Editbox*>(wmgr.getWindow("NumberEdit"));
+
+	ToUTF8(data->settingData.phone,m_buff);
+	pnBox->setText(m_buff);
+	pnBox->subscribeEvent(Editbox::EventTextChanged,Event::Subscriber(&SettingGUI::numberChanged,this));
+
+	Editbox* pwBox=static_cast<Editbox*>(wmgr.getWindow("PasswordEdit"));
+	ToUTF8(data->settingData.password,m_buff);
+	pwBox->setText(m_buff);
+	pwBox->subscribeEvent(Editbox::EventMouseClick,Event::Subscriber(&SettingGUI::EnterPassword,this));
+	pwBox->subscribeEvent(Editbox::EventTextChanged,Event::Subscriber(&SettingGUI::PasswordChanged,this));
 	//char name[11]="MusicItem0";
+
 	for(UINT i=0;i<data->realdata.numberOfMusic;i++)
 	{
 		//name[10]=i+'0';
@@ -184,6 +227,20 @@ void SettingGUI::initSetting()
 		//item->setFont();
 	}
 
+	ButtonBase* exBt=static_cast<ButtonBase*>(wmgr.getWindow("exitButton0"));
+	exBt->subscribeEvent(Editbox::EventMouseClick,Event::Subscriber(&SettingGUI::exit,this));
+
+	exBt=static_cast<ButtonBase*>(wmgr.getWindow("exitButton1"));
+	exBt->subscribeEvent(Editbox::EventMouseClick,Event::Subscriber(&SettingGUI::exit,this));
+
+	exBt=static_cast<ButtonBase*>(wmgr.getWindow("exitButton2"));
+	exBt->subscribeEvent(Editbox::EventMouseClick,Event::Subscriber(&SettingGUI::exit,this));
+
+	exBt=static_cast<ButtonBase*>(wmgr.getWindow("exitButton3"));
+	exBt->subscribeEvent(Editbox::EventMouseClick,Event::Subscriber(&SettingGUI::exit,this));
+
+
+
 
 
 	ButtonBase* adBt = static_cast<ButtonBase*>(wmgr.getWindow("AddMusic"));
@@ -193,7 +250,148 @@ void SettingGUI::initSetting()
 	ButtonBase* reBt = static_cast<ButtonBase*>(wmgr.getWindow("RemoveMusic"));
 
 	reBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::RemoveMusic,this));
+
+	ButtonBase* pnBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePn"));
+
+	pnBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::EnsurePn,this));
+
+	ButtonBase* pwBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePw"));
+
+	pwBt->subscribeEvent(ButtonBase::EventMouseClick,Event::Subscriber(&SettingGUI::EnsurePw,this));
+
+
+	Window* test = wmgr.getWindow("test");
+	CEGUI::ImagesetManager::getSingleton().createFromImageFile("designImages", "design.png");
+	test->setProperty("FrameEnabled", "false");
+    test->setProperty("BackgroundEnabled", "false");
+	test->setProperty("Image", "set:designImages image:spade");
+
+	Scrollbar* ve=static_cast<Scrollbar*>(wmgr.getWindow("Volume"));
+	ve->setDocumentSize(100.0f);
+	ve->setPageSize(0.0f);
+	ve->setScrollPosition(data->settingData.volume*100.0f);
+	ve->subscribeEvent(Scrollbar::EventScrollPositionChanged,Event::Subscriber(&SettingGUI::Volume,this));
 }
+bool SettingGUI::ItemDoubleClick(const CEGUI::EventArgs& args)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	ItemListbox* list=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
+	void* cp;
+#ifdef UNICODE
+	wchar_t	buff[50];
+	MultiByteToWideChar( CP_UTF8, 0,list->getLastSelectedItem()->getText().c_str(), -1, buff, 50);
+	cp=buff;
+#else
+	cp=pnBox->getText().c_str();
+#endif
+	Sound::playMusic((TCHAR*)cp);
+	return true;
+}
+bool SettingGUI::Volume(const CEGUI::EventArgs& args)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	Scrollbar* ve=static_cast<Scrollbar*>(wmgr.getWindow("Volume"));
+	data->settingData.volume=ve->getScrollPosition()/100.0f;
+	Sound::setMusicVolume(data->settingData.volume);
+	return true;
+}
+bool SettingGUI::EnterPassword(const CEGUI::EventArgs& args)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	Editbox* pwBox=static_cast<Editbox*>(wmgr.getWindow("PasswordEdit"));
+	pwBox->setTextMasked(false);
+	return true;
+}
+
+bool SettingGUI::PasswordChanged(const CEGUI::EventArgs& args)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	ButtonBase* pwBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePw"));
+	pwBt->setVisible(true);
+	return true;
+}
+
+
+bool SettingGUI::modeChanged(const CEGUI::EventArgs&)
+{
+	
+
+	WindowManager& wmgr = WindowManager::getSingleton();
+	Combobox* modeList=static_cast<Combobox*>(wmgr.getWindow("Mode"));
+
+	ListboxItem* item=modeList->getSelectedItem();
+	if(item)
+	{
+		data->settingData.musicMode=item->getID();
+	}
+	return true;
+}
+bool SettingGUI::numberChanged(const CEGUI::EventArgs&)
+{
+	
+
+	WindowManager& wmgr = WindowManager::getSingleton();
+
+
+	ButtonBase* pnBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePn"));
+	
+
+	Editbox* pnBox=static_cast<Editbox*>(wmgr.getWindow("NumberEdit"));
+
+	if(pnBox->getText().length()==11)
+	{
+		pnBt->setVisible(true);
+	}
+	else
+	{
+		pnBt->setVisible(false);
+	}
+	return true;
+}
+bool SettingGUI::EnsurePn(const CEGUI::EventArgs&)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	Editbox* pnBox=static_cast<Editbox*>(wmgr.getWindow("NumberEdit"));
+	ButtonBase* pnBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePn"));
+
+	void* cp;
+#ifdef UNICODE
+	wchar_t	buff[12];
+	MultiByteToWideChar( CP_UTF8, 0,pnBox->getText().c_str(), -1, buff, 12);
+	cp=buff;
+#else
+	cp=pnBox->getText().c_str();
+#endif
+	memcpy(data->settingData.phone,cp,12*sizeof(TCHAR));
+
+	pnBt->setVisible(false);
+
+	return true;
+}
+
+
+bool SettingGUI::EnsurePw(const CEGUI::EventArgs&)
+{
+	WindowManager& wmgr = WindowManager::getSingleton();
+	Editbox* pwBox=static_cast<Editbox*>(wmgr.getWindow("PasswordEdit"));
+	ButtonBase* pwBt=static_cast<ButtonBase*>(wmgr.getWindow("EnsurePw"));
+	void* cp;
+#ifdef UNICODE
+	wchar_t	buff[10];
+	MultiByteToWideChar( CP_UTF8, 0,pwBox->getText().c_str(), -1, buff, 10);
+	cp=buff;
+#else
+	cp=pwBox->getText().c_str();
+#endif
+	memcpy(data->settingData.password,cp,(lstrlen((TCHAR*)cp)+1)*sizeof(TCHAR));
+
+	pwBox->setTextMasked(true);
+	pwBt->setVisible(false);
+	return true;
+}
+
+
+
 bool SettingGUI::RemoveMusic(const CEGUI::EventArgs& args)
 {
 	TCHAR szCurDir[MAX_PATH]; 
@@ -202,7 +400,7 @@ bool SettingGUI::RemoveMusic(const CEGUI::EventArgs& args)
 	WindowManager& wmgr = WindowManager::getSingleton();
 	ItemListbox* list1=static_cast<ItemListbox*>(wmgr.getWindow("MusicList"));
 
-	ItemEntry* item=list1->getNextSelectedItem();
+	ItemEntry* item=list1->getFirstSelectedItem();
 
 	UINT strLen=lstrlen(szCurDir);
 	wchar_t	buff[128];
@@ -228,7 +426,7 @@ bool SettingGUI::RemoveMusic(const CEGUI::EventArgs& args)
 }
 bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
 {
-	ImmediateData* data=ImmediateData::immediateData;
+	
 	//DInput* input=DInput::InitializeDInput();
 	////input->m_mouseDevice->Release();
 	//input->m_mouseDevice->Unacquire();
@@ -298,6 +496,7 @@ bool SettingGUI::AddMusic(const CEGUI::EventArgs& args)
 }
 DWORD WINAPI SettingGUI::CopyThread(LPVOID lpParamter)
 {
+	
 	ImmediateData* data=ImmediateData::immediateData;
 
 	TCHAR* str=(TCHAR*)lpParamter;
